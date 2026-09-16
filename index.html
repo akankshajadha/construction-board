@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>construction board</title>
+  <!-- LED Fonts -->
+  <link rel="preconnect" href="https://googleapis.com">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin>
+  <link href="https://googleapis.com/css2?family=Courier+Prime:wght@700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <!-- Separated Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="signboard-container">
+    <div class="led-screen">
+      <table class="board-table">
+        <thead>
+          <tr>
+            <th colspan="4" class="main-header">constrction board</th>  
+          </tr>
+            <tr class="datetime-row">
+            <td colspan="3">
+              <div class="datetime-horizontal-cell">
+                <span>DATE: <span id="dateDisplay">--</span></span>
+                <span>TIME: <span id="timeDisplay">--</span></span>
+              </div>
+            </td>
+          </tr>
+          <tr class="column-headers">
+            <th class="col-param">Parameter</th>
+            <th class="col-coun">Count</th>
+            <th class="col-unit">Unit</th>
+        
+          </tr>
+        </thead>
+        <tbody>
+          <tr id="row-pm10">
+            <td class="param-cell">TEMPERATURE</td>
+            <td class="conc-cell" id="tempDisplay">--</td>
+            <td class="unit-cell">°C </td>
+          
+          </tr>
+          <tr id="row-pm2.5">
+            <td class="param-cell">HUMIDITY</td>
+            <td class="conc-cell" id="humDisplay">--</td>
+            <td class="unit-cell">%</td>
+       
+          </tr>
+          <tr id="row-so2">
+            <td class="param-cell">PM2.5</td>
+            <td class="conc-cell" id="pm25Display">--</td>
+            <td class="unit-cell">&micro;g/m&sup3;</td>
+           
+          </tr>
+          <tr id="row-no2">
+            <td class="param-cell">PM10</td>
+            <td class="conc-cell" id="pm10Display">--</td>
+           <td class="unit-cell">&micro;g/m&sup3;</td>
+            
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <script>  
+  
+   const BACKEND_URL = "http://localhost:3000/api/pollution";
+
+   
+    function updateLiveClock() {
+        const now = new Date();
+        
+        // Formats Date as DD/MM/YYYY
+        const dateString = now.toLocaleDateString('en-GB'); 
+        
+        // Formats Time as HH:MM:SS (Ticks forward smoothly by the second)
+        const timeString = now.toLocaleTimeString('en-GB'); 
+
+        // Inject the active values into your left-aligned date and time layout spans
+        if(document.getElementById("dateDisplay")) document.getElementById("dateDisplay").innerText = dateString;
+        if(document.getElementById("timeDisplay")) document.getElementById("timeDisplay").innerText = timeString;
+    }
+
+   
+    async function fetchLiveBackendData() {
+        try {
+            const response = await fetch(BACKEND_URL);
+            if (!response.ok) throw new Error("Backend connection lost");
+            const data = await response.json();
+
+            // Inject environmental parameters into your solid white box cells
+            if(document.getElementById("pm25Display")) document.getElementById("pm25Display").innerText = data.pm25;
+            if(document.getElementById("pm10Display")) document.getElementById("pm10Display").innerText = data.pm10;
+            if(document.getElementById("tempDisplay")) document.getElementById("tempDisplay").innerText = data.temperature;
+            if(document.getElementById("humDisplay")) document.getElementById("humDisplay").innerText = data.humidity;
+
+        } catch (error) {
+            console.error("Backend fetch error:", error);
+        }
+    }
+
+    
+    
+    
+    updateLiveClock();
+    fetchLiveBackendData();
+   
+    setInterval(updateLiveClock, 1000);
+    
+    
+    setInterval(fetchLiveBackendData, 10000);
+  </script>
+</body>
+</html>
+
+ 

@@ -1,0 +1,147 @@
+body {
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* Outer Signboard Box */
+.signboard-container {
+  background-color: #0b0b0b;
+  padding: 15px;
+  border: 12px solid #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(255, 255, 255, 0.15);
+  width: 100%;
+  max-width: 650px;
+  box-sizing: border-box;
+}
+
+/* Screen Matrix Backing */
+.led-screen {
+  border: 3px solid #ffffff;
+  padding: 5px;
+  background: radial-gradient(circle, #151525 0%, #05050a 100%);
+}
+
+/* Grid Layout structure */
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+/* Header Text Glows */
+.main-header {
+  color: #00e5ff;
+  font-size: 1.8rem;
+  letter-spacing: 2px;
+  padding: 12px 0;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+  border-bottom: 3px double #00e5ff;
+}
+
+.datetime-row td {
+  padding: 0 !important;
+  border-bottom: 3px solid #ffffff !important; /* Solid white separator line */
+}
+
+.datetime-horizontal-cell {
+  padding: 18px 50px;
+  font-size: 1.2rem;
+  box-sizing: border-box;
+  width: 100%;
+
+  display: flex !important;
+  justify-content: flex-between; 
+    gap: 95px;    
+}
+
+
+.datetime-horizontal-cell span, 
+.datetime-horizontal-cell #dateDisplay, 
+.datetime-horizontal-cell #timeDisplay {
+  color: #ffffff; 
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.7); /* Matrix white LED glow effect */
+  font-weight: bold;
+}
+
+
+.column-headers th {
+  color: #ffffff;
+  font-size: 1.1rem;
+  padding: 10px 5px;
+  letter-spacing: 1px;
+  border-bottom: 2px solid #ffffff;
+  border-right: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.column-headers th:last-child {
+  border-right: none;
+}
+
+.col-param { width: 30%; }
+.col-conc  { width: 25%; }
+.col-unit  { width: 25%; }
+.col-std   { width: 20%; }
+
+/* Grid Separation Rules */
+.board-table td {
+  padding: 12px 5px;
+  font-size: 1.3rem;
+  border-bottom: 2px dashed rgba(255, 255, 255, 0.15);
+  border-right: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.board-table tr:last-child td {
+  border-bottom: none;
+}
+
+.board-table td:last-child {
+  border-right: none;
+}
+
+/* LED Matrix Color Assignments */
+.param-cell {
+  color: #ff6600;
+  text-shadow: 0 0 6px rgba(255, 102, 0, 0.8);
+  font-weight: bold;
+}
+
+.conc-cell {
+  color: #00ff66;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.9);
+  font-size: 1.5rem;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.unit-cell {
+  color: #ff3333;
+  text-shadow: 0 0 6px rgba(255, 51, 51, 0.8);
+  font-family: 'Courier Prime', monospace;
+  font-size: 1.1rem;
+}
+.unit-cell {
+  text-transform: none !important;
+}
+
+.std-cell {
+  color: #00ff66;
+  text-shadow: 0 0 8px rgba(0, 255, 102, 0.8);
+  font-weight: bold;
+}
+
+.flash-update {
+  animation: pulse 0.5s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 1; transform: scale(1.05); color: #ffffff; text-shadow: 0 0 15px #ffffff; }
+  100% { opacity: 1; transform: scale(1); }
+}
