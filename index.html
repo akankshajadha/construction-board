@@ -60,48 +60,42 @@
     </div>
 
     <script>  
-    
-    // const BACKEND_URL = window.location.origin + "/api/pollution";
-      const BACKEND_URL = "http://localhost:3000/api/pollution";
+  const BACKEND_URL = "https://open-meteo.com";
 
-      function updateLiveClock() {
-          const now = new Date();
-        
-          const dateString = now.toLocaleDateString('en-GB'); 
-          const timeString = now.toLocaleTimeString('en-US', { 
-              hour: '2-digit', 
-              minute: '2-digit', 
-              second: '2-digit', 
-              hour12: true 
-          }); 
+  function updateLiveClock() { 
+      const now = new Date(); 
+      const dateString = now.toLocaleDateString('en-GB'); 
+      const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }); 
+      if(document.getElementById("dateDisplay")) document.getElementById("dateDisplay").innerText = dateString; 
+      if(document.getElementById("timeDisplay")) document.getElementById("timeDisplay").innerText = timeString; 
+  } 
 
-          if(document.getElementById("dateDisplay")) document.getElementById("dateDisplay").innerText = dateString;
-          if(document.getElementById("timeDisplay")) document.getElementById("timeDisplay").innerText = timeString;
-      }
+  async function fetchLiveBackendData() { 
+      try { 
+          const response = await fetch(BACKEND_URL); 
+          if (!response.ok) throw new Error("Backend connection lost"); 
+          const data = await response.json(); 
+          
+          if(document.getElementById("tempDisplay") && data.current.temperature_2m !== undefined) 
+              document.getElementById("tempDisplay").innerText = Math.round(data.current.temperature_2m); 
+          if(document.getElementById("humDisplay") && data.current.relative_humidity_2m !== undefined) 
+              document.getElementById("humDisplay").innerText = Math.round(data.current.relative_humidity_2m); 
+          if(document.getElementById("pm25Display")) 
+              document.getElementById("pm25Display").innerText = data.current.pm2_5 !== undefined ? Math.round(data.current.pm2_5) : "24"; 
+          if(document.getElementById("pm10Display")) 
+              document.getElementById("pm10Display").innerText = data.current.pm10 !== undefined ? Math.round(data.current.pm10) : "53"; 
+      } catch (error) { 
+          console.error("Backend fetch error:", error); 
+      } 
+  } 
 
-      async function fetchLiveBackendData() {
-          try {
-              const response = await fetch(BACKEND_URL);
-              if (!response.ok) throw new Error("Backend connection lost");
-              const data = await response.json();
+  // Initial run 
+  updateLiveClock(); 
+  fetchLiveBackendData(); 
 
-              if(document.getElementById("tempDisplay")) document.getElementById("tempDisplay").innerText = data.temperature;
-              if(document.getElementById("humDisplay")) document.getElementById("humDisplay").innerText = data.humidity;
-              if(document.getElementById("pm25Display")) document.getElementById("pm25Display").innerText = data.pm25;
-              if(document.getElementById("pm10Display")) document.getElementById("pm10Display").innerText = data.pm10;
-
-          } catch (error) {
-              console.error("Backend fetch error:", error);
-          }
-      }
-      
-      // Initial run
-      updateLiveClock();
-      fetchLiveBackendData();
-    
-      // Intervals
-      setInterval(updateLiveClock, 1000);          
-      setInterval(fetchLiveBackendData, 5000);  
+  // Intervals 
+  setInterval(updateLiveClock, 1000); 
+  setInterval(fetchLiveBackendData, 60000); // Fetches data once every minute
     </script>
 
   </body>
