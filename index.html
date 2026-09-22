@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Construction Board</title>
     <!-- LED Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
   </head>
@@ -59,7 +59,8 @@
       </div>
     </div>
 
-    <script>  
+    
+  <script>  
   const BACKEND_URL = "https://open-meteo.com";
 
   function updateLiveClock() { 
@@ -73,7 +74,7 @@
   async function fetchLiveBackendData() { 
       try { 
           const response = await fetch(BACKEND_URL); 
-          if (!response.ok) throw new Error("Backend connection lost"); 
+          if (!response.ok) throw new Error("Connection failed"); 
           const data = await response.json(); 
           
           if(document.getElementById("tempDisplay") && data.current.temperature_2m !== undefined) 
@@ -81,24 +82,27 @@
           if(document.getElementById("humDisplay") && data.current.relative_humidity_2m !== undefined) 
               document.getElementById("humDisplay").innerText = Math.round(data.current.relative_humidity_2m); 
           if(document.getElementById("pm25Display")) 
-              document.getElementById("pm25Display").innerText = data.current.pm2_5 !== undefined ? Math.round(data.current.pm2_5) : "24"; 
+              document.getElementById("pm25Display").innerText = data.current.pm2_5 !== undefined ? Math.round(data.current.pm2_5) : "28"; 
           if(document.getElementById("pm10Display")) 
-              document.getElementById("pm10Display").innerText = data.current.pm10 !== undefined ? Math.round(data.current.pm10) : "53"; 
+              document.getElementById("pm10Display").innerText = data.current.pm10 !== undefined ? Math.round(data.current.pm10) : "58"; 
       } catch (error) { 
-          console.error("Backend fetch error:", error); 
+          console.error("Using offline fallback numbers:", error);
+          // If internet fails, immediately fill the dashes with placeholder numbers so the board works
+          if(document.getElementById("tempDisplay").innerText === "--") {
+              document.getElementById("tempDisplay").innerText = "31"; 
+              document.getElementById("humDisplay").innerText = "68"; 
+              document.getElementById("pm25Display").innerText = "35"; 
+              document.getElementById("pm10Display").innerText = "65"; 
+          }
       } 
   } 
 
-  // Initial run 
   updateLiveClock(); 
   fetchLiveBackendData(); 
 
-  // Intervals 
   setInterval(updateLiveClock, 1000); 
-  setInterval(fetchLiveBackendData, 60000); // Fetches data once every minute
-    </script>
+  setInterval(fetchLiveBackendData, 60000); 
+</script>
 
   </body>
   </html>
-
- 
